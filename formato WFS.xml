@@ -1,0 +1,171 @@
+<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+<wfs:Insert>
+	<feature:incidentes xmlns:feature="http://www.tinyows.org/">
+		<feature:the_geom>
+			<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:900913">
+				<gml:pointMember>
+					<gml:Point>
+						<gml:pos>1141040.5466402 5682597.1000195</gml:pos>
+					</gml:Point>
+				</gml:pointMember>
+			</gml:MultiPoint>
+		</feature:the_geom>
+	</feature:dbtcivici>
+</wfs:Insert>
+</wfs:Transaction>
+
+
+<!--
+    This request inserts a record into the usa:states dataset.
+    
+    WARNING: THIS QUERY MODIFIES DATA
+    It has been disabled to prevent accidental data loss.
+    To enable it, delete 'REMOVE_' from the namespace URI.
+       
+  -->
+<wfs:Transaction service="WFS" version="1.0.0"
+  xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:usa="http://census.gov"
+  xmlns:gml="http://www.opengis.net/gml">
+  <wfs:Insert>
+    <opengeo:incidente>
+      <opengeo:geom>
+        <gml:MultiPolygon srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+          <gml:polygonMember>
+            <gml:Polygon srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+              <gml:outerBoundaryIs>
+                <gml:LinearRing>
+                  <gml:coordinates decimal="." cs="," ts=" ">-69.0,31.0 -69.0,30.0 -70.0,30.0 -70.0,31.0 -69.0,31.0</gml:coordinates>
+                </gml:LinearRing>
+              </gml:outerBoundaryIs>
+            </gml:Polygon>
+          </gml:polygonMember>
+        </gml:MultiPolygon>
+      </opengeo:geom>
+      <opengeo:tipo_incidente>3</opengeo:tipo_incidente>
+    </opengeo:incidente>
+  </wfs:Insert>
+</wfs:Transaction>
+
+
+  -->
+<wfs:Transaction service="WFS" version="1.0.0"
+  xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:usa="http://census.gov"
+  xmlns:gml="http://www.opengis.net/gml">
+  <wfs:Insert>
+    <opengeo:incidente>
+      <opengeo:geom>
+            <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+				<gml:pos>-77.023804 -12.117927</gml:pos>
+            </gml:Point>
+        </opengeo:geom>
+      <opengeo:tipo_incidente>3</opengeo:tipo_incidente>
+    </opengeo:incidente>
+  </wfs:Insert>
+</wfs:Transaction>
+
+
+
+http://localhost:8080/geoserver/opengeo/wfs
+
+<wfs:Transaction service="WFS" version="1.0.0"
+  xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:opengeo="127.0.0.1"
+  xmlns:gml="http://www.opengis.net/gml">
+  <wfs:Insert>
+    <opengeo:incidente>
+      <opengeo:geom>
+        <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+          <gml:coordinates decimal="." cs="," ts=" ">-77.023804,-12.117927</gml:coordinates>
+        </gml:Point>
+      </opengeo:geom>
+    <opengeo:id>7</opengeo:id>
+    <opengeo:tipo_incidente>3</opengeo:tipo_incidente>
+    </opengeo:incidente>
+  </wfs:Insert>
+</wfs:Transaction>
+
+
+
+http://localhost:8080/geoserver/hack/wfs
+
+<wfs:Transaction service="WFS" version="1.0.0"
+  xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:hack="crg.ulaval.ca"
+  xmlns:gml="http://www.opengis.net/gml">
+  <wfs:Insert>
+    <hack:incidente_nombre>
+      <hack:GEOM>
+        <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+          <gml:coordinates decimal="." cs="," ts=" ">-70.51837,45.75877</gml:coordinates>
+        </gml:Point>
+      </hack:GEOM>
+    <hack:ID>20</hack:ID>
+    <hack:TIPO_INCIDENTE>2</hack:TIPO_INCIDENTE>
+    </hack:incidente_nombre>
+  </wfs:Insert>
+</wfs:Transaction>
+
+
+
+
+
+
+
+<wfs:Transaction service="WFS" version="1.0.0"
+  xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:opengeo="127.0.0.1"
+  xmlns:gml="http://www.opengis.net/gml">
+  <wfs:Insert>
+    <opengeo:incidente>
+      <opengeo:geom>
+        <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+          <gml:coordinates decimal="." cs="," ts=" ">-77.023804,-12.117927</gml:coordinates>
+        </gml:Point>
+      </opengeo:geom>
+    <opengeo:id>7</opengeo:id>
+    <opengeo:tipo_incidente>3</opengeo:tipo_incidente>
+    </opengeo:incidente>
+  </wfs:Insert>
+</wfs:Transaction>
+
+//////////////////////// FINAL //////////////////////
+
+
+
+
+
+id serial primary key,
+tipo_incidente integer null,
+fecha_inicio timestamp,
+fecha_fin timestamp,
+estado_incidente_id integer null,
+likes integer null,
+geom geometry(point, 4326)
+
+GEOSERVER
+==========
+1) CREAR UN WORKSPACE "hack"
+
+http://localhost:8080/geoserver/hack/wfs
+
+<wfs:Transaction service="WFS" version="1.0.0"
+  xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:hack="hackaton.org"
+  xmlns:gml="http://www.opengis.net/gml">
+  <wfs:Insert>
+    <hack:incidente_nombre>
+    <hack:geom>
+      <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+        <gml:coordinates decimal="." cs="," ts=" ">-77.02240,-12.11955</gml:coordinates>
+      </gml:Point>
+    </hack:geom>
+    <hack:tipo_incidente>44</hack:tipo_incidente>
+    <hack:fecha_inicio>2009-04-29T00:00:00</hack:fecha_inicio>
+    <hack:fecha_fin>2009-04-29T00:00:00</hack:fecha_fin>
+    <hack:estado_incidente_id>1</hack:estado_incidente_id>
+    <hack:likes>26</hack:likes>
+    </hack:incidente_nombre>
+  </wfs:Insert>
+</wfs:Transaction>

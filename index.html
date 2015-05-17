@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+ 
+  <title>[ Incidencias Miraflores ]</title>
+  <meta charset="utf-8">
+  <link href="./ol3/css/ol.css" rel="stylesheet">
+
+
+
+
+  <style>
+  #map {
+    width: 100%;
+    height: 700px;
+  }
+  </style>
+  </head>
+  <body>
+  <div id="map"></div>
+ 
+  <button id="clear">clear</button>
+ 
+  <script src="ol3/build/ol.js"></script>
+  <script type="text/javascript">
+
+    var clearButton = document.getElementById('clear');
+    clearButton.addEventListener('click', function(event) {
+    // Reset the "start" and "destination" features.
+    startPoint.setGeometry(null);
+    destPoint.setGeometry(null);
+    // Remove the result layer.
+    map.removeLayer(result);
+    });
+
+ 
+ 
+  var map = new ol.Map({
+    target: 'map',
+    layers: [
+        new ol.layer.Tile({
+            source: new ol.source.OSM()
+        }),
+ 
+        new ol.layer.Tile({
+        source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
+        url: 'http://localhost:8080/geoserver/hack/wms',
+        params: {'LAYERS': 'hack:estructura', 'TILED': true},
+        serverType: 'geoserver',
+        format: 'image/png'
+        }))
+        })
+		,    
+		   new ol.layer.Tile({
+        source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
+        url: 'http://localhost:8080/geoserver/hack/wms',
+        params: {'LAYERS': 'hack:pista', 'TILED': true},
+        serverType: 'geoserver',
+        format: 'image/png'
+        }))
+        })
+		,
+        new ol.layer.Tile({
+        source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
+        url: 'http://localhost:8080/geoserver/hack/wms',
+        params: {'LAYERS': 'hack:obra', 'TILED': true},
+        serverType: 'geoserver',
+        format: 'image/png'
+        }))
+        })
+		,
+		
+        new ol.layer.Tile({
+        source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
+        url: 'http://localhost:8080/geoserver/hack/wms',
+        params: {'LAYERS': 'hack:incidente_nombre', 'TILED': true},
+        serverType: 'geoserver',
+        format: 'image/png'
+        }))
+        })
+
+    ],
+    view: new ol.View({
+      center:  ol.proj.transform([-77.02816,-12.124710000], 'EPSG:4326', 'EPSG:3857'),
+      zoom: 14
+    }),
+    controls: ol.control.defaults({
+      attributionOptions: {
+        collapsible: false
+      }
+    })
+  });
+
+   // WMS GET parameters
+  var params = {
+  LAYERS: 'opengeo:view_incidentes',
+  FORMAT: 'image/png'
+  };
+
+
+    // The "start" and "destination" features.
+    var startPoint = new ol.Feature();
+    var destPoint = new ol.Feature();
+
+    // The vector layer used to display the "start" and "destination" features.
+    var vectorLayer = new ol.layer.Vector({
+      source: new ol.source.Vector({
+        features: [startPoint, destPoint]
+      })
+    });
+   
+   
+    map.addLayer(vectorLayer);
+
+  
+
+    // ********************************************************************
+    
+    // A transform function to convert coordinates from EPSG:3857
+    // to EPSG:4326.
+    var transform = ol.proj.getTransform('EPSG:3857', 'EPSG:4326');
+
+    // Register a map click listener.
+    map.on('click', function(event) {
+   
+        startPoint.setGeometry(new ol.geom.Point(event.coordinate));
+        // Transform the coordinates from the map projection (EPSG:3857)
+        // to the server projection (EPSG:4326).
+        var startCoord = transform(startPoint.getGeometry().getCoordinates());
+      			console.log('x1: '+ startCoord[0]);
+					console.log('y1: '+ startCoord[1]);
+        var viewparams = [
+          'x1:' + startCoord[0], 'y1:' + startCoord[1],
+        ];
+
+        params.viewparams = viewparams.join(';');
+
+		  /* funcion de envio de registro de incidentes via WFS */
+		
+		  function doit()
+		  {
+			var url = 'http://localhost:8080/geoserver/hack/wfs';
+			var method = 'POST';
+			var postData =
+				'<wfs:Transaction service="WFS" version="1.0.0" \n'
+				+ '  xmlns:wfs="http://www.opengis.net/wfs"\n'
+				+ '  xmlns:hack="hackaton.org"\n'
+				+ '  xmlns:gml="http://www.opengis.net/gml">\n'
+				+ '  <wfs:Insert>\n'
+				 + '   <hack:incidente_nombre>\n'
+				 + '   <hack:geom>\n'
+				+ '      <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">\n'
+				 + '       <gml:coordinates decimal="." cs="," ts=" ">' + startCoord[0]+ ',' + startCoord[1] +'</gml:coordinates>\n'
+				 + '     </gml:Point>\n'
+				 + '   </hack:geom>\n'
+				+ '    <hack:tipo_incidente>44</hack:tipo_incidente>\n'
+				+ '    <hack:fecha_inicio>2015-04-29T00:00:00</hack:fecha_inicio>\n'
+				+ '    <hack:fecha_fin>2016-04-29T00:00:00</hack:fecha_fin>\n'
+				+ '    <hack:estado_incidente_id>1</hack:estado_incidente_id>\n'
+				 + '   <hack:likes>26</hack:likes>\n'
+				+ '    </hack:incidente_nombre>\n'
+				+ '  </wfs:Insert>\n'
+				+ ' </wfs:Transaction>\n';
+			var req = new XMLHttpRequest();
+			req.open("POST", url, true);
+			req.setRequestHeader('User-Agent', 'XMLHTTP/1.0');
+			req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+			req.onreadystatechange = function () {
+			  if (req.readyState != 4) return;
+			  if (req.status != 200 && req.status != 304) {
+				alert('HTTP error ' + req.status);
+				return;
+			  }
+			  alert(req.responseText);
+			}
+			if (req.readyState == 4) return;
+			req.send(postData);
+		  };
+
+        result = new ol.layer.Image({
+          source: new ol.source.ImageWMS({
+            url: 'http://localhost:8080/geoserver/opengeo/wms',
+            params: params
+          })
+        });
+        map.addLayer(result);
+      
+    });
+
+  </script>
+  
+  
+  <input type="button" value="doit" onclick="doit()"/>
+  
+  </body>
+</html>
