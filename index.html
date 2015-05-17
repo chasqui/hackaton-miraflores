@@ -8,18 +8,84 @@
   <title>[ Incidencias Miraflores ]</title>
   <meta charset="utf-8">
   <link href="./ol3/css/ol.css" rel="stylesheet">
-
-
-
-
   <style>
   #map {
     width: 100%;
     height: 700px;
   }
+
   </style>
+  <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   </head>
   <body>
+
+ <div id = "myModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Registrar incidencia</h4>
+      </div>
+
+
+      <div class="modal-body">
+        <p>Descripcion:</p>
+        <textarea id = "descripcion" class="form-control" rows="3"></textarea>
+        <div class="radio">
+        <label>
+          <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+          Pista averiada
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+          accidente de transito
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+          animal en peligro
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+          discriminacion
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+          auto mal estacionado
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+          iluminacion publica
+        </label>
+      </div>
+
+      <div class="radio">
+        <label>
+          <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" disabled>
+          semaforo inoperativo
+        </label>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" id = "clickRegistrar" class="btn btn-primary">Registrar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
   <div id="map"></div>
  
   <button id="clear">clear</button>
@@ -36,6 +102,14 @@
     map.removeLayer(result);
     });
 
+  var currentLat = false;
+  var currentLon = false;
+
+  $('#clickRegistrar').click( function(){
+    var desc = $("#descripcion").val();
+    console.log('click', currentLat, currentLon, desc );
+    $('#myModal').modal('hide');
+  });
  
  
   var map = new ol.Map({
@@ -47,8 +121,8 @@
  
         new ol.layer.Tile({
         source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
-        url: 'http://localhost:8080/geoserver/hack/wms',
-        params: {'LAYERS': 'hack:estructura', 'TILED': true},
+        url: 'http://172.26.10.108:8080/geoserver/hack/wms',
+        params: {'LAYERS': 'hack:estructura_nombre', 'TILED': true},
         serverType: 'geoserver',
         format: 'image/png'
         }))
@@ -56,17 +130,38 @@
 		,    
 		   new ol.layer.Tile({
         source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
-        url: 'http://localhost:8080/geoserver/hack/wms',
-        params: {'LAYERS': 'hack:pista', 'TILED': true},
+        url: 'http://172.26.10.108:8080/geoserver/hack/wms',
+        params: {'LAYERS': 'hack:pista_nombre', 'TILED': true},
         serverType: 'geoserver',
         format: 'image/png'
         }))
         })
+
+		,    
+		   new ol.layer.Tile({
+        source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
+        url: 'http://172.26.10.108:8080/geoserver/hack/wms',
+        params: {'LAYERS': 'hack:obras', 'TILED': true},
+        serverType: 'geoserver',
+        format: 'image/png'
+        }))
+        })
+
+		,    
+		   new ol.layer.Tile({
+        source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
+        url: 'http://172.26.10.108:8080/geoserver/hack/wms',
+        params: {'LAYERS': 'hack:pais_local', 'TILED': true},
+        serverType: 'geoserver',
+        format: 'image/png'
+        }))
+        })
+
 		,
         new ol.layer.Tile({
         source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
-        url: 'http://localhost:8080/geoserver/hack/wms',
-        params: {'LAYERS': 'hack:obra', 'TILED': true},
+        url: 'http://172.26.10.108:8080/geoserver/hack/wms',
+        params: {'LAYERS': 'hack:obra_nombre', 'TILED': true},
         serverType: 'geoserver',
         format: 'image/png'
         }))
@@ -75,7 +170,7 @@
 		
         new ol.layer.Tile({
         source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
-        url: 'http://localhost:8080/geoserver/hack/wms',
+        url: 'http://172.26.10.108:8080/geoserver/hack/wms',
         params: {'LAYERS': 'hack:incidente_nombre', 'TILED': true},
         serverType: 'geoserver',
         format: 'image/png'
@@ -115,7 +210,30 @@
    
     map.addLayer(vectorLayer);
 
-  
+    function getPoint( coordinates ){
+      console.log( 'coord', coordinates );
+      var iconFeature = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.transform(coordinates, 'EPSG:4326', 'EPSG:3857')),
+        name: 'Null Island',
+        population: 4000,
+        rainfall: 500
+      });
+
+
+      var iconStyle = new ol.style.Style({
+        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+          anchor: [0.5, 46],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          opacity: 0.75,
+          src: 'http://maps.google.com/mapfiles/ms/icons/blue.png'
+        }))
+      });
+
+      iconFeature.setStyle(iconStyle);
+
+      return iconFeature;
+    }
 
     // ********************************************************************
     
@@ -125,11 +243,19 @@
 
     // Register a map click listener.
     map.on('click', function(event) {
-   
+        
         startPoint.setGeometry(new ol.geom.Point(event.coordinate));
+        
+        //startPoint.setGeometry( getPoint( event.coordinate ) );
+        
+
         // Transform the coordinates from the map projection (EPSG:3857)
         // to the server projection (EPSG:4326).
         var startCoord = transform(startPoint.getGeometry().getCoordinates());
+        $('#myModal').modal('show');
+        currentLat = startCoord[0];
+        currentLon = startCoord[1];
+
       			console.log('x1: '+ startCoord[0]);
 					console.log('y1: '+ startCoord[1]);
         var viewparams = [
@@ -142,7 +268,7 @@
 		
 		  function doit()
 		  {
-			var url = 'http://localhost:8080/geoserver/hack/wfs';
+			var url = 'http://172.26.10.108:8080/geoserver/hack/wfs';
 			var method = 'POST';
 			var postData =
 				'<wfs:Transaction service="WFS" version="1.0.0" \n'
@@ -182,7 +308,7 @@
 
         result = new ol.layer.Image({
           source: new ol.source.ImageWMS({
-            url: 'http://localhost:8080/geoserver/opengeo/wms',
+            url: 'http://172.26.10.108:8080/geoserver/opengeo/wms',
             params: params
           })
         });
@@ -197,3 +323,4 @@
   
   </body>
 </html>
+
