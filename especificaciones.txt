@@ -1,0 +1,21 @@
+1.- Llenar la BD con datos de OSM
+
+2.- La app muestra el mapa, te permite seleccionar la via danhada o te permite crear un circulo
+3.- Una vez que tengas el la via seleccionada se genera un post de comentario
+4.- En el comentario se puede insertar una foto
+5.- Se guarda el comentario
+
+6.- Las personas pueden visualizar y dar '+1' a los comentarios bache
+
+
+
+Ahora para montar todo esto, pienso que necesitamos:
+
+1.- Base de Datos Postgres - PostGIS
+2.- Llenamos la BD con la topologia de Miraflores
+3.- GeoServer para el manejo del servidor GIS
+
+	* Mostrar un mapa con los baches
+	* Registrar un bache
+
+4.- Necesitamos crear un mapita en Mapbox para que se vea mas presentable
